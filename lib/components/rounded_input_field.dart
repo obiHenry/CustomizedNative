@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/components/text_field_container.dart';
 import 'package:flutter_auth/constants.dart';
@@ -5,18 +7,21 @@ import 'package:flutter_auth/constants.dart';
 class RoundedInputField extends StatelessWidget {
   final String hintText;
   final IconData icon;
+  final FormFieldValidator<String> validator;
   final ValueChanged<String> onChanged;
   const RoundedInputField({
     Key key,
     this.hintText,
     this.icon = Icons.person,
     this.onChanged,
+    this.validator
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
-      child: TextField(
+      child: TextFormField(
+        validator: validator,
         onChanged: onChanged,
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(

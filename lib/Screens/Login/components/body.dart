@@ -6,11 +6,25 @@ import 'package:flutter_auth/components/rounded_button.dart';
 import 'package:flutter_auth/components/rounded_input_field.dart';
 import 'package:flutter_auth/components/rounded_password_field.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_auth/services/auth.dart';
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
   const Body({
     Key key,
   }) : super(key: key);
+
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  final _formKey = GlobalKey<FormState>();
+  final AuthServices _auth = AuthServices();
+
+  //text field state
+  String email = '';
+  String password = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +32,7 @@ class Body extends StatelessWidget {
     return Background(
       child: SingleChildScrollView(
         child: Column(
+          key: _formKey,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
@@ -31,16 +46,62 @@ class Body extends StatelessWidget {
             ),
             SizedBox(height: size.height * 0.03),
             RoundedInputField(
+              validator: (value) => value.isEmpty ? 'Enter an email' : null,
               hintText: "Your Email",
-              onChanged: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  email = value;
+                });
+              },
             ),
             RoundedPasswordField(
-              onChanged: (value) {},
+              validator: (value) =>
+                  value.length < 6 ? 'Enter a Password 6+ chars long' : null,
+              onChanged: (value) {
+                setState(() {
+                  password = value;
+                });
+              },
             ),
+            // sign in with email and password
             RoundedButton(
               text: "LOGIN",
-              press: () {},
+              press: () async {
+                if (_formKey.currentState.validate()) {
+                  
+                  // if (result == null) {
+                  //   setState(
+                  //     () {
+                  //       error = 'please supply a  valid email';
+                  //     },
+                  //   );
+                  // }
+                }
+              },
             ),
+             SizedBox(
+              height: 0.03,
+            ),
+            Text(
+              error,
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 14.0,
+              ),
+            ),
+            //this where u can sign in anonimously
+            // RoundedButton(
+            //   text: "SIGNINANON",
+            //   press: () async {
+            //     dynamic result = await _auth.signInAnon();
+            //     if (result == null) {
+            //       print('error signing in');
+            //     } else {
+            //       print('signed in');
+            //       print(result.uid);
+            //     }
+            //   },
+            // ),
             SizedBox(height: size.height * 0.03),
             AlreadyHaveAnAccountCheck(
               press: () {
