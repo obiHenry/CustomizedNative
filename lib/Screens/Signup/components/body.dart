@@ -9,6 +9,7 @@ import 'package:flutter_auth/components/rounded_input_field.dart';
 import 'package:flutter_auth/components/rounded_password_field.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_auth/services/auth.dart';
+import 'package:flutter_auth/services/validator.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -18,6 +19,41 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   final AuthServices _auth = AuthServices();
   final _formKey = GlobalKey<FormState>();
+
+  getSnackBar(String value, MaterialColor color) {
+    Scaffold.of(context).removeCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: new Text(
+        value,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.0,
+            fontFamily: "WorkSansSemiBold"),
+      ),
+      backgroundColor: color,
+      duration: Duration(seconds: 3),
+    ));
+  }
+
+  bool enableButton = false;
+
+  void enableSubmitButton() {
+    String pwd = Validators.password(password);
+    String em = Validators.email(email);
+    print('this is the Password $password' + 'this is the Email $email');
+    print('i ran to enable button');
+
+    if ((pwd == 'input okay') && (em == 'input okay')) {
+      setState(() {
+        enableButton = true;
+      });
+    } else {
+      setState(() {
+        enableButton = false;
+      });
+    }
+  }
 
   //text field state
   String email = '';
@@ -43,11 +79,19 @@ class _BodyState extends State<Body> {
               height: size.height * 0.35,
             ),
             RoundedInputField(
-              validator: (value) => value.isEmpty ? 'Enter an email' : null,
               hintText: "Your Email",
               onChanged: (value) {
                 setState(() {
                   email = value;
+                  String validity = Validators.email(value);
+                  enableButton = false;
+
+                  if (validity == 'input okay') {
+                    enableSubmitButton();
+                    getSnackBar('this is a valid email', Colors.lightGreen);
+                  } else {
+                    getSnackBar(validity, Colors.red);
+                  }
                 });
               },
             ),
