@@ -11,6 +11,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_auth/services/auth.dart';
 import 'package:flutter_auth/services/validator.dart';
 
+import '../../../constants.dart';
+import '../../../services/validator.dart';
+
 class Body extends StatefulWidget {
   @override
   _BodyState createState() => _BodyState();
@@ -88,7 +91,7 @@ class _BodyState extends State<Body> {
 
                   if (validity == 'input okay') {
                     enableSubmitButton();
-                    getSnackBar('this is a valid email', Colors.lightGreen);
+                    getSnackBar(' valid ', Colors.lightGreen);
                   } else {
                     getSnackBar(validity, Colors.red);
                   }
@@ -101,24 +104,46 @@ class _BodyState extends State<Body> {
               onChanged: (value) {
                 setState(() {
                   password = value;
+                  String validity = Validators.password(value);
+                  enableButton = false;
+
+                  if (validity == 'input okay') {
+                    enableSubmitButton();
+                    getSnackBar(' valid ', Colors.lightGreen);
+                  } else {
+                    getSnackBar(validity, Colors.red);
+                  }
                 });
               },
             ),
             RoundedButton(
+              color: kPrimaryColor,
               text: "SIGNUP",
-              press: () async {
-                if (_formKey.currentState.validate()) {
-                  dynamic result =
-                      await _auth.registerWithEmailAndPassword(email, password);
-                  if (result == null) {
-                    setState(
-                      () {
-                        error = 'please supply a  valid email';
-                      },
-                    );
-                  }
-                }
-              },
+              press: !enableButton ? null
+              : () async {
+                 getSnackBar('please wait while we authenticate your details', Colors.lightGreen);
+                   print('$email + $password');
+                      dynamic result =
+                          await _auth.registerWithEmailAndPassword(email, password);
+
+                      if (result != null) {
+                        Navigator.of(context).pushNamed('/userDetails');
+                      }
+
+                      print(result.toString());
+                    },
+                 // if (_formKey.currentState.validate()) {
+                //   dynamic result =
+                //       await _auth.registerWithEmailAndPassword(email, password);
+                //   if (result == null) {
+                //     setState(
+                //       () {
+                //         error = 'please supply a  valid email';
+                //       },
+                //     );
+                //   }
+                // }
+              
             ),
             SizedBox(
               height: 0.03,

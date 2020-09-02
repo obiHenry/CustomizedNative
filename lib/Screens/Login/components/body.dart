@@ -5,6 +5,7 @@ import 'package:flutter_auth/components/already_have_an_account_acheck.dart';
 import 'package:flutter_auth/components/rounded_button.dart';
 import 'package:flutter_auth/components/rounded_input_field.dart';
 import 'package:flutter_auth/components/rounded_password_field.dart';
+import 'package:flutter_auth/services/validator.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_auth/services/auth.dart';
 
@@ -18,8 +19,43 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  final _formKey = GlobalKey<FormState>();
   final AuthServices _auth = AuthServices();
+  final _formKey = GlobalKey<FormState>();
+
+  getSnackBar(String value, MaterialColor color) {
+    Scaffold.of(context).removeCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: new Text(
+        value,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.0,
+            fontFamily: "WorkSansSemiBold"),
+      ),
+      backgroundColor: color,
+      duration: Duration(seconds: 3),
+    ));
+  }
+
+  bool enableButton = false;
+
+  void enableSubmitButton() {
+    String pwd = Validators.password(password);
+    String em = Validators.email(email);
+    print('this is the Password $password' + 'this is the Email $email');
+    print('i ran to enable button');
+
+    if ((pwd == 'input okay') && (em == 'input okay')) {
+      setState(() {
+        enableButton = true;
+      });
+    } else {
+      setState(() {
+        enableButton = false;
+      });
+    }
+  }
 
   //text field state
   String email = '';
@@ -46,11 +82,19 @@ class _BodyState extends State<Body> {
             ),
             SizedBox(height: size.height * 0.03),
             RoundedInputField(
-              validator: (value) => value.isEmpty ? 'Enter an email' : null,
               hintText: "Your Email",
               onChanged: (value) {
                 setState(() {
                   email = value;
+                  String validity = Validators.email(value);
+                  enableButton = false;
+
+                  if (validity == 'input okay') {
+                    enableSubmitButton();
+                    getSnackBar(' valid ', Colors.lightGreen);
+                  } else {
+                    getSnackBar(validity, Colors.red);
+                  }
                 });
               },
             ),
@@ -60,26 +104,38 @@ class _BodyState extends State<Body> {
               onChanged: (value) {
                 setState(() {
                   password = value;
+                  String validity = Validators.password(value);
+                  enableButton = false;
+
+                  if (validity == 'input okay') {
+                    enableSubmitButton();
+                    getSnackBar(' valid ', Colors.lightGreen);
+                  } else {
+                    getSnackBar(validity, Colors.red);
+                  }
                 });
               },
             ),
             // sign in with email and password
             RoundedButton(
               text: "LOGIN",
-              press: () async {
-                if (_formKey.currentState.validate()) {
-                  
-                  // if (result == null) {
-                  //   setState(
-                  //     () {
-                  //       error = 'please supply a  valid email';
-                  //     },
-                  //   );
-                  // }
-                }
-              },
+              press: !enableButton
+                  ? null
+                  : () async {
+                      getSnackBar('please wait while we check your details', Colors.lightGreen);
+                      print('$email + $password');
+                      dynamic result = await _auth.signIn(email, password);
+
+                      if (result != null) {
+                        Navigator.of(context).pushNamed('/home');
+                      } else {
+                        getSnackBar('invalid input', Colors.red);
+                      }
+
+                      print(result.toString());
+                    },
             ),
-             SizedBox(
+            SizedBox(
               height: 0.03,
             ),
             Text(

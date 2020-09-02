@@ -50,8 +50,8 @@ class AuthServices {
           email: email, password: password);
       User user = result.user;
       return _userFromFirebase(user);
-    } catch (e) {
-      print(e.toString());
+    } catch (err) {
+      print(err.toString());
       return null;
     }
   }
