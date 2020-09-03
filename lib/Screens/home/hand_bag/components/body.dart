@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/details/details_screen.dart';
+import 'package:flutter_auth/Screens/product_details/details_screen.dart';
 import 'package:flutter_auth/models/Product.dart';
 
 import '../../../../constants.dart';
