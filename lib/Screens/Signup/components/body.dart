@@ -7,6 +7,7 @@ import 'package:flutter_auth/components/already_have_an_account_acheck.dart';
 import 'package:flutter_auth/components/rounded_button.dart';
 import 'package:flutter_auth/components/rounded_input_field.dart';
 import 'package:flutter_auth/components/rounded_password_field.dart';
+import 'package:flutter_auth/services/loading_page.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_auth/services/auth.dart';
 import 'package:flutter_auth/services/validator.dart';
@@ -22,6 +23,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   final AuthServices _auth = AuthServices();
   final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
   getSnackBar(String value, MaterialColor color) {
     Scaffold.of(context).removeCurrentSnackBar();
@@ -66,7 +68,7 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Background(
+    return loading ? LoadingPage() : Background(
       child: SingleChildScrollView(
         child: Column(
           key: _formKey,
@@ -119,31 +121,40 @@ class _BodyState extends State<Body> {
             RoundedButton(
               color: kPrimaryColor,
               text: "SIGNUP",
-              press: !enableButton ? null
-              : () async {
-                 getSnackBar('please wait while we authenticate your details', Colors.lightGreen);
-                   print('$email + $password');
-                      dynamic result =
-                          await _auth.registerWithEmailAndPassword(email, password);
+              press: !enableButton
+                  ? null
+                  : () async {
+                      getSnackBar(
+                          'please wait while we authenticate your details',
+                          Colors.lightGreen);
+                      setState(() {
+                        loading = true;
+                      });
+                      print('$email + $password');
+                      dynamic result = await _auth.registerWithEmailAndPassword(
+                          email, password);
 
                       if (result != null) {
                         Navigator.of(context).pushNamed('/userDetails');
+                      } else {
+                        setState(() {
+                          loading = false;
+                        });
                       }
 
                       print(result.toString());
                     },
-                 // if (_formKey.currentState.validate()) {
-                //   dynamic result =
-                //       await _auth.registerWithEmailAndPassword(email, password);
-                //   if (result == null) {
-                //     setState(
-                //       () {
-                //         error = 'please supply a  valid email';
-                //       },
-                //     );
-                //   }
-                // }
-              
+              // if (_formKey.currentState.validate()) {
+              //   dynamic result =
+              //       await _auth.registerWithEmailAndPassword(email, password);
+              //   if (result == null) {
+              //     setState(
+              //       () {
+              //         error = 'please supply a  valid email';
+              //       },
+              //     );
+              //   }
+              // }
             ),
             SizedBox(
               height: 0.03,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Welcome/welcome_screen.dart';
-import 'package:flutter_auth/Screens/home/home_screen.dart';
-import 'package:flutter_auth/wrapper.dart';
+import 'package:flutter_auth/services/wrapper.dart';
 import 'package:flutter_auth/constants.dart';
 
 import 'package:firebase_core/firebase_core.dart';
