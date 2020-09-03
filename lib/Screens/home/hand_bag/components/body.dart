@@ -1,31 +1,37 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/details/details_screen.dart';
 import 'package:flutter_auth/models/Product.dart';
 
-import '../../constants.dart';
-import 'components/item_card.dart';
+import '../../../../constants.dart';
 
-class JewelleryScreen extends StatelessWidget {
+import 'item_card.dart';
+
+class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return  Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
-          child: Text(
-            "Women",
-            style: Theme.of(context)
-                .textTheme
-                .headline5
-                .copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
+    return 
+    // Column(
+    //   crossAxisAlignment: CrossAxisAlignment.start,
+    //   children: <Widget>[
+    //     Padding(
+    //       padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
+    //       child: Text(
+    //         "Women",
+    //         style: Theme.of(context)
+    //             .textTheme
+    //             .headline5
+    //             .copyWith(fontWeight: FontWeight.bold),
+    //       ),
+    //     ),
         
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
-            child: GridView.builder(
+        // Expanded(
+        //   child: Padding(
+        //     padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
+        //     child: 
+            
+            GridView.builder(
+              padding: const EdgeInsets.all(20),
                 itemCount: products.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -42,10 +48,9 @@ class JewelleryScreen extends StatelessWidget {
                               product: products[index],
                             ),
                           )),
-                    )),
+                    
           ),
-        ),
-      ],
+  
     );
   }
 }

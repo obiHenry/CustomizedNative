@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/home/components/body.dart';
-import 'package:flutter_auth/Screens/home/dresses_screen.dart';
-import 'package:flutter_auth/Screens/home/foot_wears_screen.dart';
-import 'package:flutter_auth/Screens/home/home_screen.dart';
-import 'package:flutter_auth/Screens/home/jewellery_screen.dart';
+
+
+import 'package:flutter_auth/Screens/home/hand_bag/hand_bag_screen.dart';
+
 import 'package:flutter_auth/services/auth.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../constants.dart';
+import 'dresses/dresses_screen.dart';
+import 'foot_wear/foot_wear_screen.dart';
+import 'jewelleries/jewellery_screen.dart';
 
 class TabScreen extends StatefulWidget {
   @override
@@ -27,7 +29,7 @@ class _TabScreenState extends State<TabScreen> {
         appBar: buildAppBar(),
         body: TabBarView(
           children: [
-            Body(),
+            HandBagScreen(),
             JewelleryScreen(),
             FootWearsScreen(),
             DressesScreen(),
@@ -41,7 +43,13 @@ class _TabScreenState extends State<TabScreen> {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      title: Text('WOMEN'),
+      title: Text(
+        'Women',
+        style: Theme.of(context)
+            .textTheme
+            .headline5
+            .copyWith(fontWeight: FontWeight.bold),
+      ),
       leading: IconButton(
         icon: SvgPicture.asset("assets/icons/back.svg"),
         onPressed: () {},
@@ -74,10 +82,14 @@ class _TabScreenState extends State<TabScreen> {
         ),
         SizedBox(width: kDefaultPaddin / 2),
       ],
+      
       bottom: TabBar(
         tabs: [
           Tab(
-            // icon: Icon(Icons.drag_handle),
+            // icon: Icon(
+            //   Icons.swap_horizontal_circle,
+            //   color: Colors.amber,
+            // ),
             child: Text(
               'Hand bag',
               style: TextStyle(color: Colors.black),
@@ -88,17 +100,27 @@ class _TabScreenState extends State<TabScreen> {
               'Jewellery',
               style: TextStyle(color: Colors.black),
             ),
-            // icon: Icon(Icons.shop),
+            // icon: Icon(
+            //   Icons.shop,
+            //   color: Colors.amber,
+            // ),
           ),
           Tab(
-            // icon: Icon(Icons.folder_open),
-           child: Text(
+            // icon: Icon(
+            //   Icons.folder_open,
+            //   color: Colors.amber,
+            // ),
+            child: Text(
               'Foot wear',
               style: TextStyle(color: Colors.black),
             ),
           ),
           Tab(
-           child: Text(
+            // icon: Icon(
+            //   Icons.folder_open,
+            //   color: Colors.amber,
+            // ),
+            child: Text(
               'Dresses',
               style: TextStyle(color: Colors.black),
             ),
