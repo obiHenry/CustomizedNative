@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Login/login_screen.dart';
 import 'package:flutter_auth/Screens/Signup/components/background.dart';
@@ -37,7 +38,7 @@ class _BodyState extends State<Body> {
             fontFamily: "WorkSansSemiBold"),
       ),
       backgroundColor: color,
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 4),
     ));
   }
 
@@ -46,9 +47,6 @@ class _BodyState extends State<Body> {
   void enableSubmitButton() {
     String pwd = Validators.password(password);
     String em = Validators.email(email);
-    print('this is the Password $password' + 'this is the Email $email');
-    print('i ran to enable button');
-
     if ((pwd == 'input okay') && (em == 'input okay')) {
       setState(() {
         enableButton = true;
@@ -63,144 +61,153 @@ class _BodyState extends State<Body> {
   //text field state
   String email = '';
   String password = '';
-  String error = '';
+  String errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return loading ? LoadingPage() : Background(
-      child: SingleChildScrollView(
-        child: Column(
-          key: _formKey,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "SIGNUP",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: size.height * 0.03),
-            SvgPicture.asset(
-              "assets/icons/signup.svg",
-              height: size.height * 0.35,
-            ),
-            RoundedInputField(
-              hintText: "Your Email",
-              onChanged: (value) {
-                setState(() {
-                  email = value;
-                  String validity = Validators.email(value);
-                  enableButton = false;
-
-                  if (validity == 'input okay') {
-                    enableSubmitButton();
-                    getSnackBar(' valid ', Colors.lightGreen);
-                  } else {
-                    getSnackBar(validity, Colors.red);
-                  }
-                });
-              },
-            ),
-            RoundedPasswordField(
-              validator: (value) =>
-                  value.length < 6 ? 'Enter a Password 6+ chars long' : null,
-              onChanged: (value) {
-                setState(() {
-                  password = value;
-                  String validity = Validators.password(value);
-                  enableButton = false;
-
-                  if (validity == 'input okay') {
-                    enableSubmitButton();
-                    getSnackBar(' valid ', Colors.lightGreen);
-                  } else {
-                    getSnackBar(validity, Colors.red);
-                  }
-                });
-              },
-            ),
-            RoundedButton(
-              color: kPrimaryColor,
-              text: "SIGNUP",
-              press: !enableButton
-                  ? null
-                  : () async {
-                      getSnackBar(
-                          'please wait while we authenticate your details',
-                          Colors.lightGreen);
+    return loading
+        ? LoadingPage()
+        : Background(
+            child: SingleChildScrollView(
+              child: Column(
+                key: _formKey,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "SIGNUP",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  SvgPicture.asset(
+                    "assets/icons/signup.svg",
+                    height: size.height * 0.35,
+                  ),
+                  RoundedInputField(
+                    hintText: "Your Email",
+                    onChanged: (value) {
                       setState(() {
-                        loading = true;
+                        email = value;
+                        String validity = Validators.email(value);
+                        enableButton = false;
+
+                        if (validity == 'input okay') {
+                          enableSubmitButton();
+                          getSnackBar(' valid ', Colors.lightGreen);
+                        } else {
+                          getSnackBar(validity, Colors.red);
+                        }
                       });
-                      print('$email + $password');
-                      dynamic result = await _auth.registerWithEmailAndPassword(
-                          email, password);
-
-                      if (result != null) {
-                        Navigator.of(context).pushNamed('/userDetails');
-                      } else {
-                        setState(() {
-                          loading = false;
-                        });
-                      }
-
-                      print(result.toString());
-                    },
-              // if (_formKey.currentState.validate()) {
-              //   dynamic result =
-              //       await _auth.registerWithEmailAndPassword(email, password);
-              //   if (result == null) {
-              //     setState(
-              //       () {
-              //         error = 'please supply a  valid email';
-              //       },
-              //     );
-              //   }
-              // }
-            ),
-            SizedBox(
-              height: 0.03,
-            ),
-            Text(
-              error,
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 14.0,
-              ),
-            ),
-            SizedBox(height: size.height * 0.03),
-            AlreadyHaveAnAccountCheck(
-              login: false,
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return LoginScreen();
                     },
                   ),
-                );
-              },
+                  RoundedPasswordField(
+                    validator: (value) => value.length < 6
+                        ? 'Enter a Password 6+ chars long'
+                        : null,
+                    onChanged: (value) {
+                      setState(() {
+                        password = value;
+                        String validity = Validators.password(value);
+                        enableButton = false;
+
+                        if (validity == 'input okay') {
+                          enableSubmitButton();
+                          getSnackBar(' valid ', Colors.lightGreen);
+                        } else {
+                          getSnackBar(validity, Colors.red);
+                        }
+                      });
+                    },
+                  ),
+                  RoundedButton(
+                    color: kPrimaryColor,
+                    text: "SIGNUP",
+                    press: !enableButton
+                        ? null
+                        : () async {
+                            setState(() {
+                              loading = true;
+                            });
+                            print('$email + $password');
+                            dynamic result = await _auth
+                                .registerWithEmailAndPassword(email, password);
+
+                            if (result['status']) {
+                              setState(() {
+                                loading = false;
+                                getSnackBar(
+                                    'please go to sign in page to sign in',
+                                    Colors.lightGreen);
+                              });
+                              // Navigator.of(context).pushNamed('/home');
+                            } else {
+                              // message = result.toString();
+                              errorMessage = result['message'].toString();
+
+                              setState(() {
+                                loading = false;
+                                getSnackBar(errorMessage, Colors.red);
+                                print('this is the result : ' + errorMessage);
+                              });
+                            }
+                          },
+                    // if (_formKey.currentState.validate()) {
+                    //   dynamic result =
+                    //       await _auth.registerWithEmailAndPassword(email, password);
+                    //   if (result == null) {
+                    //     setState(
+                    //       () {
+                    //         error = 'please supply a  valid email';
+                    //       },
+                    //     );
+                    //   }
+                    // }
+                  ),
+                  SizedBox(
+                    height: 0.03,
+                  ),
+                  Text(
+                    errorMessage,
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 14.0,
+                    ),
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  AlreadyHaveAnAccountCheck(
+                    login: false,
+                    press: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return LoginScreen();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  OrDivider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SocalIcon(
+                        iconSrc: "assets/icons/facebook.svg",
+                        press: () {},
+                      ),
+                      SocalIcon(
+                        iconSrc: "assets/icons/twitter.svg",
+                        press: () {},
+                      ),
+                      SocalIcon(
+                        iconSrc: "assets/icons/google-plus.svg",
+                        press: () {},
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-            OrDivider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SocalIcon(
-                  iconSrc: "assets/icons/facebook.svg",
-                  press: () {},
-                ),
-                SocalIcon(
-                  iconSrc: "assets/icons/twitter.svg",
-                  press: () {},
-                ),
-                SocalIcon(
-                  iconSrc: "assets/icons/google-plus.svg",
-                  press: () {},
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
-    );
+          );
   }
 }

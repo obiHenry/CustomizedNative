@@ -5,12 +5,27 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: kPrimaryLightColor,
-      child: Center(
-        child: SpinKitCircle(
-          color: kPrimaryColor,
-          size: 50.0,
+    return Opacity(
+      opacity: 0.5,
+      child: Container(
+        color: kPrimaryLightColor,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SpinKitRing(
+                color: kPrimaryColor,
+                size: 50.0,
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Text(
+                'please wait while we authenticate your details',
+                style: TextStyle(color: kPrimaryColor, fontSize: 15,),
+              )
+            ],
+          ),
         ),
       ),
     );

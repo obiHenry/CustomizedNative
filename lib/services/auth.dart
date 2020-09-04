@@ -1,3 +1,5 @@
+
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_auth/models/user.dart';
 
@@ -36,32 +38,49 @@ class AuthServices {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       User user = result.user;
-      return _userFromFirebase(user);
+      
+      // return _userFromFirebase(user);
+      return {
+        'status': true,
+        'message': _userFromFirebase(user)
+      };
+      
     } catch (e) {
-      print(e.toString());
-      return null;
+      String message = e.toString();
+      print(message);
+
+      return {
+        'status': false,
+        'message': e.message
+      };
     }
   }
 
-  // sign in
-   Future signIn(String email, String password) async {
+  // sign in with email and password
+  Future signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       User user = result.user;
-      return _userFromFirebase(user);
+      return {
+        'status': true,
+        'message': _userFromFirebase(user)
+      };
     } catch (err) {
       print(err.toString());
-      return null;
+
+       return {
+        'status': false,
+        'message': err.message
+      };
     }
   }
-
-  
 
   // sign out
   Future signOut() async {
     try {
-      return await _auth.signOut();
+     return await _auth.signOut();
+    
     } catch (e) {
       print(e.toString());
       return null;

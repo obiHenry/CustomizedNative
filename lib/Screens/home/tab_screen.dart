@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 import 'package:flutter_auth/Screens/home/hand_bag/hand_bag_screen.dart';
+import 'package:flutter_auth/models/user.dart';
 
 import 'package:flutter_auth/services/auth.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 import 'dresses/dresses_screen.dart';
@@ -22,18 +23,21 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 0,
-      length: 4,
-      child: Scaffold(
-        appBar: buildAppBar(),
-        body: TabBarView(
-          children: [
-            HandBagScreen(),
-            JewelleryScreen(),
-            FootWearsScreen(),
-            DressesScreen(),
-          ],
+    return StreamProvider<CurrentUser>.value(
+      value: AuthServices().user,
+      child: DefaultTabController(
+        initialIndex: 0,
+        length: 4,
+        child: Scaffold(
+          appBar: buildAppBar(),
+          body: TabBarView(
+            children: [
+              HandBagScreen(),
+              JewelleryScreen(),
+              FootWearsScreen(),
+              DressesScreen(),
+            ],
+          ),
         ),
       ),
     );
@@ -82,7 +86,6 @@ class _TabScreenState extends State<TabScreen> {
         ),
         SizedBox(width: kDefaultPaddin / 2),
       ],
-      
       bottom: TabBar(
         tabs: [
           Tab(

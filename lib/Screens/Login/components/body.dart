@@ -45,8 +45,6 @@ class _BodyState extends State<Body> {
   void enableSubmitButton() {
     String pwd = Validators.password(password);
     String em = Validators.email(email);
-    print('this is the Password $password' + 'this is the Email $email');
-    print('i ran to enable button');
 
     if ((pwd == 'input okay') && (em == 'input okay')) {
       setState(() {
@@ -62,128 +60,131 @@ class _BodyState extends State<Body> {
   //text field state
   String email = '';
   String password = '';
-  String error = '';
+  String errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return loading ? LoadingPage () : Background(
-      child: SingleChildScrollView(
-        child: Column(
-          key: _formKey,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "LOGIN",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: size.height * 0.03),
-            SvgPicture.asset(
-              "assets/icons/login.svg",
-              height: size.height * 0.35,
-            ),
-            SizedBox(height: size.height * 0.03),
-            RoundedInputField(
-              hintText: "Your Email",
-              onChanged: (value) {
-                setState(() {
-                  email = value;
-                  String validity = Validators.email(value);
-                  enableButton = false;
-
-                  if (validity == 'input okay') {
-                    enableSubmitButton();
-                    getSnackBar(' valid ', Colors.lightGreen);
-                  } else {
-                    getSnackBar(validity, Colors.red);
-                  }
-                });
-              },
-            ),
-            RoundedPasswordField(
-              validator: (value) =>
-                  value.length < 6 ? 'Enter a Password 6+ chars long' : null,
-              onChanged: (value) {
-                setState(() {
-                  password = value;
-                  String validity = Validators.password(value);
-                  enableButton = false;
-
-                  if (validity == 'input okay') {
-                    enableSubmitButton();
-                    getSnackBar(' valid ', Colors.lightGreen);
-                  } else {
-                    getSnackBar(validity, Colors.red);
-                  }
-                });
-              },
-            ),
-            // sign in with email and password
-            RoundedButton(
-              text: "LOGIN",
-              press: !enableButton
-                  ? null
-                  : () async {
-                      getSnackBar('please wait while we check your details',
-                          Colors.lightGreen);
+    return loading
+        ? LoadingPage()
+        : Background(
+            child: SingleChildScrollView(
+              child: Column(
+                key: _formKey,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "LOGIN",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  SvgPicture.asset(
+                    "assets/icons/login.svg",
+                    height: size.height * 0.35,
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  RoundedInputField(
+                    hintText: "Your Email",
+                    onChanged: (value) {
                       setState(() {
-                        loading = true;
+                        email = value;
+                        String validity = Validators.email(value);
+                        enableButton = false;
+
+                        if (validity == 'input okay') {
+                          enableSubmitButton();
+                          getSnackBar(' valid ', Colors.lightGreen);
+                        } else {
+                          getSnackBar(validity, Colors.red);
+                        }
                       });
-                      print('$email + $password');
-                      dynamic result = await _auth.signIn(email, password);
-
-                      if (result != null) {
-                        Navigator.of(context).pushNamed('/home');
-                      } else {
-                        setState(() {
-                          loading = false;
-                        });
-
-                        getSnackBar('invalid input', Colors.red);
-                      }
-
-                      print(result.toString());
-                    },
-            ),
-            SizedBox(
-              height: 0.03,
-            ),
-            Text(
-              error,
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 14.0,
-              ),
-            ),
-            //this where u can sign in anonimously
-            // RoundedButton(
-            //   text: "SIGNINANON",
-            //   press: () async {
-            //     dynamic result = await _auth.signInAnon();
-            //     if (result == null) {
-            //       print('error signing in');
-            //     } else {
-            //       print('signed in');
-            //       print(result.uid);
-            //     }
-            //   },
-            // ),
-            SizedBox(height: size.height * 0.03),
-            AlreadyHaveAnAccountCheck(
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return SignUpScreen();
                     },
                   ),
-                );
-              },
+                  RoundedPasswordField(
+                    validator: (value) => value.length < 6
+                        ? 'Enter a Password 6+ chars long'
+                        : null,
+                    onChanged: (value) {
+                      setState(() {
+                        password = value;
+                        String validity = Validators.password(value);
+                        enableButton = false;
+
+                        if (validity == 'input okay') {
+                          enableSubmitButton();
+                          getSnackBar(' valid ', Colors.lightGreen);
+                        } else {
+                          getSnackBar(validity, Colors.red);
+                        }
+                      });
+                    },
+                  ),
+                  // sign in with email and password
+                  RoundedButton(
+                    text: "LOGIN",
+                    press: !enableButton
+                        ? null
+                        : () async {
+                            setState(() {
+                              loading = true;
+                            });
+                            print('$email + $password');
+                            dynamic result =
+                                await _auth.signInWithEmailAndPassword(email, password);
+
+                            if (result['status']) {
+                              setState(() {
+                                loading = false;
+                              });
+                              
+                              Navigator.of(context)
+                                  .pushReplacementNamed('/');
+                            } else {
+                              errorMessage = result['message'].toString();
+                              setState(
+                                () {
+                                  loading = false;
+                                  getSnackBar(errorMessage, Colors.red);
+                                },
+                              );
+                            }
+
+                            print(result.toString());
+                          },
+                  ),
+                  SizedBox(
+                    height: 0.03,
+                  ),
+                 
+                  //this where u can sign in anonimously
+                  // RoundedButton(
+                  //   text: "SIGNINANON",
+                  //   press: () async {
+                  //     dynamic result = await _auth.signInAnon();
+                  //     if (result == null) {
+                  //       print('error signing in');
+                  //     } else {
+                  //       print('signed in');
+                  //       print(result.uid);
+                  //     }
+                  //   },
+                  // ),
+                  SizedBox(height: size.height * 0.03),
+                  AlreadyHaveAnAccountCheck(
+                    press: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return SignUpScreen();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }

@@ -4,7 +4,8 @@ import 'package:flutter_auth/Screens/Signup/signup_screen.dart';
 import 'package:flutter_auth/Screens/UserDatails/userDetails_screen.dart';
 import 'package:flutter_auth/Screens/Welcome/welcome_screen.dart';
 import 'package:flutter_auth/Screens/home/home_screen.dart';
-import 'package:flutter_auth/Screens/home/tab_screen.dart';
+import 'package:flutter_auth/services/wrapper.dart';
+
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -12,10 +13,12 @@ class RouteGenerator {
     final args = settings.arguments;
 
     switch (settings.name) {
-      case '/':
+        case '/':
+        return MaterialPageRoute(builder: (_) => Wrapper());
+      case '/welcome':
         return MaterialPageRoute(builder: (_) => WelcomeScreen());
       case '/home':
-        return MaterialPageRoute(builder: (_) => TabScreen());
+        return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/signUp':
         return MaterialPageRoute(
           builder: (_) => SignUpScreen(),
