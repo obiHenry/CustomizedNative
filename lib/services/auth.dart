@@ -1,7 +1,6 @@
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_auth/models/user.dart';
+import 'package:flutter_auth/services/database.dart';
 
 class AuthServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -38,21 +37,17 @@ class AuthServices {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       User user = result.user;
-      
-      // return _userFromFirebase(user);
-      return {
-        'status': true,
-        'message': _userFromFirebase(user)
-      };
-      
+
+      //create a new document for the user with the uid that is a container where he or she can throw in something
+      await DatabaseServices(uid: user.uid)
+          .updateUserData('image', 'senetor', 'anything', 344, 23);
+
+      return {'status': true, 'message': _userFromFirebase(user)};
     } catch (e) {
       String message = e.toString();
       print(message);
 
-      return {
-        'status': false,
-        'message': e.message
-      };
+      return {'status': false, 'message': e.message};
     }
   }
 
@@ -62,25 +57,18 @@ class AuthServices {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       User user = result.user;
-      return {
-        'status': true,
-        'message': _userFromFirebase(user)
-      };
+      return {'status': true, 'message': _userFromFirebase(user)};
     } catch (err) {
       print(err.toString());
 
-       return {
-        'status': false,
-        'message': err.message
-      };
+      return {'status': false, 'message': err.message};
     }
   }
 
   // sign out
   Future signOut() async {
     try {
-     return await _auth.signOut();
-    
+      return await _auth.signOut();
     } catch (e) {
       print(e.toString());
       return null;

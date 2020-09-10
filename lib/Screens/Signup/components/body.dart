@@ -163,16 +163,8 @@ class _BodyState extends State<Body> {
                     //   }
                     // }
                   ),
-                  SizedBox(
-                    height: 0.03,
-                  ),
-                  Text(
-                    errorMessage,
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 14.0,
-                    ),
-                  ),
+              
+               
                   SizedBox(height: size.height * 0.03),
                   AlreadyHaveAnAccountCheck(
                     login: false,

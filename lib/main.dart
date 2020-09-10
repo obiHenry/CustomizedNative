@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamProvider<CurrentUser>.value(
       value: AuthServices().user,
+     
 
       child: MaterialApp(
         initialRoute: '/',

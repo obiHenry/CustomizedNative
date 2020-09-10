@@ -152,9 +152,6 @@ class _BodyState extends State<Body> {
                             print(result.toString());
                           },
                   ),
-                  SizedBox(
-                    height: 0.03,
-                  ),
                  
                   //this where u can sign in anonimously
                   // RoundedButton(

@@ -2,12 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_auth/Screens/home/hand_bag/hand_bag_screen.dart';
-import 'package:flutter_auth/models/user.dart';
-
+import 'package:flutter_auth/Screens/home/product_form.dart';
 import 'package:flutter_auth/services/auth.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
-
 import '../../constants.dart';
 import 'dresses/dresses_screen.dart';
 import 'foot_wear/foot_wear_screen.dart';
@@ -20,24 +17,31 @@ class TabScreen extends StatefulWidget {
 
 class _TabScreenState extends State<TabScreen> {
   final AuthServices _auth = AuthServices();
+  void _showSettingsPanel() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 60),
+            child: ProductForm(),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<CurrentUser>.value(
-      value: AuthServices().user,
-      child: DefaultTabController(
-        initialIndex: 0,
-        length: 4,
-        child: Scaffold(
-          appBar: buildAppBar(),
-          body: TabBarView(
-            children: [
-              HandBagScreen(),
-              JewelleryScreen(),
-              FootWearsScreen(),
-              DressesScreen(),
-            ],
-          ),
+    return DefaultTabController(
+      initialIndex: 0,
+      length: 4,
+      child: Scaffold(
+        appBar: buildAppBar(),
+        body: TabBarView(
+          children: [
+            HandBagScreen(),
+            JewelleryScreen(),
+            FootWearsScreen(),
+            DressesScreen(),
+          ],
         ),
       ),
     );
@@ -47,12 +51,14 @@ class _TabScreenState extends State<TabScreen> {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      title: Text(
-        'Women',
-        style: Theme.of(context)
-            .textTheme
-            .headline5
-            .copyWith(fontWeight: FontWeight.bold),
+      toolbarHeight: 110,
+      title: Container(
+        child: Text('Women',
+            style: Theme.of(context)
+                .textTheme
+                .headline5
+                .copyWith(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.start),
       ),
       leading: IconButton(
         icon: SvgPicture.asset("assets/icons/back.svg"),
@@ -83,6 +89,13 @@ class _TabScreenState extends State<TabScreen> {
             Icons.person,
           ),
           label: Text('Logout'),
+        ),
+        IconButton(
+          icon: Icon(Icons.add),
+          color: kTextColor,
+          onPressed: () {
+            _showSettingsPanel();
+          },
         ),
         SizedBox(width: kDefaultPaddin / 2),
       ],

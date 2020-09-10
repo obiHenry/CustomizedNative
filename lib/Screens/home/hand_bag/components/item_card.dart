@@ -1,6 +1,7 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/models/Product.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../constants.dart';
 
@@ -15,6 +16,21 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final products = Provider.of<List<Product>>(context);
+    // products.forEach((product) {
+    //   print(product.image);
+    //   print(product.title);
+    //   print(product.size);
+    //   print(product.price);
+    //   print(product.description);
+    //   print(product.image);
+    // });
+
+    // print(products);
+    // for (var doc in products.docs) {
+    //   print(doc.data());
+    // }
+
     return GestureDetector(
       onTap: press,
       child: Column(
@@ -28,12 +44,14 @@ class ItemCard extends StatelessWidget {
               // height: 180,
               // width: 160,
               decoration: BoxDecoration(
-                color: product.color,
+                color: Color(0xFF3D82AE),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Hero(
-                tag: "${product.id}",
-                child: Image.asset(product.image),
+              // child: Hero(
+              //   // tag: "${product.id}",),
+              child: Text(
+                product.image,
+                style: TextStyle(color: kTextLightColor),
               ),
             ),
           ),
