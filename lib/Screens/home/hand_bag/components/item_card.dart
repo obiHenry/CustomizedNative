@@ -47,11 +47,12 @@ class ItemCard extends StatelessWidget {
                 color: Color(0xFF3D82AE),
                 borderRadius: BorderRadius.circular(16),
               ),
-              // child: Hero(
-              //   // tag: "${product.id}",),
-              child: Text(
-                product.image,
-                style: TextStyle(color: kTextLightColor),
+              child: Hero(
+                tag: "${product.uid}",
+                child:  Image.asset(
+                    product.image,
+                    fit: BoxFit.fill,
+                  ),
               ),
             ),
           ),

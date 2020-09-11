@@ -17,7 +17,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
-    final products = Provider.of<List<Product>>(context);
+    final products = Provider.of<List<Product>>(context) ?? [];
     //  products.forEach((product) {
     //   print(product.image);
     //   print(product.title);

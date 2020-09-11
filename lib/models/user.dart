@@ -6,11 +6,13 @@ class CurrentUser {
 }
 
 class UserData {
+  final int id;
   final String uid;
   final String image, title, description;
   final int price, size;
 
   UserData({
+    this.id,
     this.uid,
     this.image,
     this.title,

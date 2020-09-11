@@ -5,6 +5,7 @@ import 'package:flutter_auth/models/user.dart';
 
 class DatabaseServices {
   final String uid;
+  
   DatabaseServices({this.uid});
   //colllection reference
 
@@ -24,11 +25,12 @@ class DatabaseServices {
     );
   }
 
-  // product list from snapshot from database
+  // product list from from database  snapshot
   List<Product> _productListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((products) {
       return Product(
-        image: products.data()['imagePath'] ?? '',
+        uid: uid,
+        image: products.data()['image '] ?? '',
         title: products.data()['title'] ?? '',
         description: products.data()['description'] ?? '',
         size: products.data()['size'] ?? '0',
@@ -37,7 +39,7 @@ class DatabaseServices {
     }).toList();
   }
 
-  // userdata from snapshot to input the datas
+  // userdata from user input   to database snapshot
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return UserData(
       uid: uid,
@@ -49,7 +51,7 @@ class DatabaseServices {
     );
   }
 
-//get product stream from the firebase database
+//get product stream from the firebase database to be able to pass it around 
   Stream<List<Product>> get ankara {
     return ankaraCollection.snapshots().map(_productListFromSnapshot);
   }
